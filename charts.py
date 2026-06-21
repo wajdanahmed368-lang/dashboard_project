@@ -21,9 +21,9 @@ def apply_chart_style():
     plt.rcParams['figure.facecolor'] = THEME_BG
     plt.rcParams['axes.facecolor'] = CARD_BG
     plt.rcParams['text.color'] = TEXT_COLOR
-    plt.rcParams['axes.labelcolor'] = TEXT_MUTED
-    plt.rcParams['xtick.color'] = TEXT_MUTED
-    plt.rcParams['ytick.color'] = TEXT_MUTED
+    plt.rcParams['axes.labelcolor'] = TEXT_COLOR
+    plt.rcParams['xtick.color'] = TEXT_COLOR
+    plt.rcParams['ytick.color'] = TEXT_COLOR
     plt.rcParams['grid.color'] = GRID_COLOR
     plt.rcParams['axes.edgecolor'] = BORDER_COLOR
     plt.rcParams['font.size'] = 10
@@ -32,7 +32,9 @@ def apply_chart_style():
         "axes.facecolor": CARD_BG,
         "grid.color": GRID_COLOR,
         "text.color": TEXT_COLOR,
-        "axes.labelcolor": TEXT_MUTED
+        "axes.labelcolor": TEXT_COLOR,
+        "xtick.color": TEXT_COLOR,
+        "ytick.color": TEXT_COLOR
     })
 
 def fig_to_base64(fig):
@@ -102,8 +104,8 @@ def get_target_runs_histogram(matches):
     )
     
     ax.set_title("Distribution of Target Runs", color=TEXT_COLOR, fontsize=13, fontweight='bold', pad=15)
-    ax.set_xlabel("Target Runs", color=TEXT_MUTED, fontsize=11)
-    ax.set_ylabel("Count of Matches", color=TEXT_MUTED, fontsize=11)
+    ax.set_xlabel("Target Runs", color=TEXT_COLOR, fontsize=11)
+    ax.set_ylabel("Count of Matches", color=TEXT_COLOR, fontsize=11)
     ax.grid(True, linestyle='--', alpha=0.3)
     
     return fig_to_base64(fig)
@@ -130,8 +132,8 @@ def get_matches_trend_chart(matches):
     )
     
     ax.set_title("Matches Played Over Seasons", color=TEXT_COLOR, fontsize=13, fontweight='bold', pad=15)
-    ax.set_xlabel("Season", color=TEXT_MUTED, fontsize=11)
-    ax.set_ylabel("Number of Matches", color=TEXT_MUTED, fontsize=11)
+    ax.set_xlabel("Season", color=TEXT_COLOR, fontsize=11)
+    ax.set_ylabel("Number of Matches", color=TEXT_COLOR, fontsize=11)
     plt.xticks(rotation=45)
     ax.grid(True, linestyle='--', alpha=0.3)
     
@@ -171,8 +173,8 @@ def get_top_winners_chart(matches):
         
     ax.invert_yaxis()  # top-down
     ax.set_title("Top 10 Teams by Victory Count", color=TEXT_COLOR, fontsize=13, fontweight='bold', pad=15)
-    ax.set_xlabel("Total Wins", color=TEXT_MUTED, fontsize=11)
-    ax.set_ylabel("Team Name", color=TEXT_MUTED, fontsize=11)
+    ax.set_xlabel("Total Wins", color=TEXT_COLOR, fontsize=11)
+    ax.set_ylabel("Team Name", color=TEXT_COLOR, fontsize=11)
     ax.grid(True, axis='x', linestyle='--', alpha=0.2)
     
     return fig_to_base64(fig)
@@ -204,9 +206,10 @@ def get_target_vs_margin_scatter(matches):
     )
     
     ax.set_title("Target Runs vs. Victory Margin", color=TEXT_COLOR, fontsize=13, fontweight='bold', pad=15)
-    ax.set_xlabel("Target Runs", color=TEXT_MUTED, fontsize=11)
-    ax.set_ylabel("Result Margin (Runs/Wickets)", color=TEXT_MUTED, fontsize=11)
-    ax.legend(title="Win Mode", facecolor=CARD_BG, edgecolor=BORDER_COLOR)
+    ax.set_xlabel("Target Runs", color=TEXT_COLOR, fontsize=11)
+    ax.set_ylabel("Result Margin (Runs/Wickets)", color=TEXT_COLOR, fontsize=11)
+    legend = ax.legend(title="Win Mode", facecolor=CARD_BG, edgecolor=BORDER_COLOR, labelcolor=TEXT_COLOR)
+    plt.setp(legend.get_title(), color=TEXT_COLOR)
     ax.grid(True, linestyle='--', alpha=0.3)
     
     return fig_to_base64(fig)
@@ -233,8 +236,8 @@ def get_margin_boxplot(matches):
     )
     
     ax.set_title("Victory Margin Spread by Win Type", color=TEXT_COLOR, fontsize=13, fontweight='bold', pad=15)
-    ax.set_xlabel("Win Type (Runs vs Wickets)", color=TEXT_MUTED, fontsize=11)
-    ax.set_ylabel("Winning Margin", color=TEXT_MUTED, fontsize=11)
+    ax.set_xlabel("Win Type (Runs vs Wickets)", color=TEXT_COLOR, fontsize=11)
+    ax.set_ylabel("Winning Margin", color=TEXT_COLOR, fontsize=11)
     ax.grid(True, axis='y', linestyle='--', alpha=0.2)
     
     return fig_to_base64(fig)
@@ -267,7 +270,7 @@ def get_correlation_heatmap(matches):
         fmt=".2f",
         vmin=-1,
         vmax=1,
-        annot_kws={'size': 11, 'weight': 'bold'},
+        annot_kws={'size': 11, 'weight': 'bold', 'color': TEXT_COLOR},
         ax=ax,
         cbar=True
     )
@@ -312,10 +315,10 @@ def get_cumulative_wins_area(matches):
     )
     
     ax.set_title("Cumulative Wins Trend (Top 4 Teams)", color=TEXT_COLOR, fontsize=13, fontweight='bold', pad=15)
-    ax.set_xlabel("Season", color=TEXT_MUTED, fontsize=11)
-    ax.set_ylabel("Cumulative Victories", color=TEXT_MUTED, fontsize=11)
+    ax.set_xlabel("Season", color=TEXT_COLOR, fontsize=11)
+    ax.set_ylabel("Cumulative Victories", color=TEXT_COLOR, fontsize=11)
     plt.xticks(rotation=45)
-    ax.legend(loc='upper left', facecolor=CARD_BG, edgecolor=BORDER_COLOR)
+    ax.legend(loc='upper left', facecolor=CARD_BG, edgecolor=BORDER_COLOR, labelcolor=TEXT_COLOR)
     ax.grid(True, linestyle='--', alpha=0.3)
     
     return fig_to_base64(fig)
@@ -344,8 +347,8 @@ def get_cities_countplot(matches):
         ax.text(v + 1, i, str(v), color=TEXT_COLOR, va='center', fontweight='bold')
         
     ax.set_title("Top 10 Host Cities by Match Count", color=TEXT_COLOR, fontsize=13, fontweight='bold', pad=15)
-    ax.set_xlabel("Matches Played", color=TEXT_MUTED, fontsize=11)
-    ax.set_ylabel("City", color=TEXT_MUTED, fontsize=11)
+    ax.set_xlabel("Matches Played", color=TEXT_COLOR, fontsize=11)
+    ax.set_ylabel("City", color=TEXT_COLOR, fontsize=11)
     ax.grid(True, axis='x', linestyle='--', alpha=0.2)
     
     return fig_to_base64(fig)
@@ -374,8 +377,8 @@ def get_target_runs_violin(matches):
     )
     
     ax.set_title("Target Runs Density and Spread over Seasons", color=TEXT_COLOR, fontsize=13, fontweight='bold', pad=15)
-    ax.set_xlabel("Season", color=TEXT_MUTED, fontsize=11)
-    ax.set_ylabel("Target Score", color=TEXT_MUTED, fontsize=11)
+    ax.set_xlabel("Season", color=TEXT_COLOR, fontsize=11)
+    ax.set_ylabel("Target Score", color=TEXT_COLOR, fontsize=11)
     plt.xticks(rotation=45)
     ax.grid(True, axis='y', linestyle='--', alpha=0.2)
     
