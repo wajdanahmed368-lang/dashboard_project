@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IPL Analytics Hub - Exploratory Data Analysis</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
+    <!-- FontAwesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Local Stylesheet -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar for Filters -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <i class="fa-solid fa-trophy brand-icon"></i>
+                <h2>IPL ANALYTICS</h2>
+            </div>
+            
+            <div class="sidebar-content">
+                <form id="filters-form" onsubmit="event.preventDefault();">
+                    
+                    <!-- Reset Filters Button -->
+                    <div class="filter-group reset-group">
+                        <button type="button" id="btn-reset" class="btn-secondary">
+                            <i class="fa-solid fa-rotate-left"></i> Reset All Filters
+                        </button>
+                    </div>
+                    
+                    <!-- Search / Text Filter -->
+                    <div class="filter-group">
+                        <label for="filter-search"><i class="fa-solid fa-magnifying-glass"></i> Keyword Search</label>
+                        <input type="text" id="filter-search" placeholder="Search Venue, Player, Winner..." autocomplete="off">
+                    </div>
+                    
+                    <!-- Category Filter: Season -->
+                    <div class="filter-group">
+                        <label for="filter-season"><i class="fa-solid fa-calendar"></i> Season (Year)</label>
+                        <select id="filter-season" class="select-custom">
+                            <option value="all">All Seasons</option>
+                            <!-- Dynamically populated -->
+                        </select>
+                    </div>
+
+                    <!-- Category Filter: Player of Match -->
+                    <div class="filter-group">
+                        <label for="filter-player"><i class="fa-solid fa-user"></i> Player of the Match</label>
+                        <select id="filter-player" class="select-custom">
+                            <option value="all">All Players</option>
+                            <!-- Dynamically populated -->
+                        </select>
+                    </div>
+
+                    <!-- Date Range Filter -->
+                    <div class="filter-group">
+                        <label><i class="fa-solid fa-clock"></i> Date Range</label>
+                        <div class="date-inputs">
+                            <input type="date" id="filter-start-date">
+                            <input type="date" id="filter-end-date">
+                        </div>
+                    </div>
+
+                    <!-- Numerical Range Slider: Margin of Victory -->
+                    <div class="filter-group">
+                        <div class="slider-label-row">
+                            <label for="filter-margin"><i class="fa-solid fa-chart-line"></i> Min Result Margin</label>
+                            <span id="margin-value">0</span>
+                        </div>
+                        <input type="range" id="filter-margin" min="0" max="150" value="0" class="slider-custom">
+                    </div>
+
+                    <!-- Multi-Select Filter: Teams -->
+                    <div class="filter-group">
+                        <label><i class="fa-solid fa-users"></i> Filter by Teams</label>
+                        <div class="multiselect-container" id="teams-multiselect">
+                            <!-- Dynamically populated -->
+                        </div>
+                    </div>
+
+                </form>
+            </div>
+            <div class="sidebar-footer">
+                <p>Exploratory Data Analysis Project</p>
+                <p class="instructor">Instructor: Ali Hassan Sherazi</p>
+            </div>
+        </aside>
+
+        <!-- Main Dashboard Area -->
+        <main class="main-content">
+            <!-- Header -->
+            <header class="dashboard-header">
+                <div class="header-title">
+                    <h1>IPL Exploratory Data Analysis Dashboard</h1>
+                    <p class="description">Interactive exploration of 1,000+ Indian Premier League matches and ball-by-ball statistics (2008 - 2024).</p>
+                </div>
+                <div class="record-badge">
+                    <span id="record-count">0</span> Matches Shown
+                </div>
+            </header>
+
+            <!-- KPI Cards Grid -->
+            <section class="kpis-section">
+                <!-- Card 1 -->
+                <div class="kpi-card">
+                    <div class="kpi-icon color-cyan"><i class="fa-solid fa-gamepad"></i></div>
+                    <div class="kpi-info">
+                        <h3>Total Matches</h3>
+                        <p class="kpi-value" id="kpi-matches">0</p>
+                    </div>
+                </div>
+                <!-- Card 2 -->
+                <div class="kpi-card">
+                    <div class="kpi-icon color-purple"><i class="fa-solid fa-baseball-bat-ball"></i></div>
+                    <div class="kpi-info">
+                        <h3>Total Runs Scored</h3>
+                        <p class="kpi-value" id="kpi-runs">0</p>
+                    </div>
+                </div>
+                <!-- Card 3 -->
+                <div class="kpi-card">
+                    <div class="kpi-icon color-gold"><i class="fa-solid fa-bullseye"></i></div>
+                    <div class="kpi-info">
+                        <h3>Avg Target runs</h3>
+                        <p class="kpi-value" id="kpi-avg-target">0.0</p>
+                    </div>
+                </div>
+                <!-- Card 4 -->
+                <div class="kpi-card">
+                    <div class="kpi-icon color-coral"><i class="fa-solid fa-crosshairs"></i></div>
+                    <div class="kpi-info">
+                        <h3>Toss Impact (Win %)</h3>
+                        <p class="kpi-value" id="kpi-toss-impact">0%</p>
+                    </div>
+                </div>
+                <!-- Card 5 -->
+                <div class="kpi-card">
+                    <div class="kpi-icon color-green"><i class="fa-solid fa-award"></i></div>
+                    <div class="kpi-info">
+                        <h3>Top Player (POTM)</h3>
+                        <p class="kpi-value" id="kpi-top-player" style="font-size: 1.15rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 160px;">-</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Charts Grid Section -->
+            <section class="charts-section">
+                <!-- Chart Card 1 -->
+                <div class="chart-card large">
+                    <div class="chart-header">
+                        <h2>1. Toss Decision Distribution (Pie Chart)</h2>
+                        <span class="info-tooltip" title="Shows the proportion of matches where teams chose to bat vs field after winning the toss."><i class="fa-solid fa-circle-info"></i></span>
+                    </div>
+                    <div class="chart-container">
+                        <div class="loader-overlay"><div class="spinner"></div></div>
+                        <img id="chart-toss_decision" src="" alt="Toss Decision Distribution">
+                    </div>
+                    <p class="chart-insight">Teams in the IPL historically lean towards fielding first, taking advantage of chasing under lights and evening dew factors.</p>
+                </div>
+
+                <!-- Chart Card 2 -->
+                <div class="chart-card large">
+                    <div class="chart-header">
+                        <h2>2. Target Runs Frequency Distribution (Histogram)</h2>
+                        <span class="info-tooltip" title="Frequency distribution of target runs set by teams batting first. Includes a KDE density curve."><i class="fa-solid fa-circle-info"></i></span>
+                    </div>
+                    <div class="chart-container">
+                        <div class="loader-overlay"><div class="spinner"></div></div>
+                        <img id="chart-target_runs_hist" src="" alt="Target Runs Distribution">
+                    </div>
+                    <p class="chart-insight">Target scores follow a normal-like distribution peaking around 160-180 runs. Scores above 200 are rare but represent matches with high batting superiority.</p>
+                </div>
+
+                <!-- Chart Card 3 -->
+                <div class="chart-card large">
+                    <div class="chart-header">
+                        <h2>3. Matches Played Over Seasons (Line Chart)</h2>
+                        <span class="info-tooltip" title="Trend line of total matches played per IPL season."><i class="fa-solid fa-circle-info"></i></span>
+                    </div>
+                    <div class="chart-container">
+                        <div class="loader-overlay"><div class="spinner"></div></div>
+                        <img id="chart-matches_trend" src="" alt="Matches Played Trend">
+                    </div>
+                    <p class="chart-insight">Spikes in matches correlate with the expansion of the league (addition of teams) in seasons like 2011-2013 and 2022 onwards.</p>
+                </div>
+
+                <!-- Chart Card 4 -->
+                <div class="chart-card large">
+                    <div class="chart-header">
+                        <h2>4. Top 10 Teams by Victory Count (Bar Chart)</h2>
+                        <span class="info-tooltip" title="Horizontal bar comparison of match win totals for top performing franchises."><i class="fa-solid fa-circle-info"></i></span>
+                    </div>
+                    <div class="chart-container">
+                        <div class="loader-overlay"><div class="spinner"></div></div>
+                        <img id="chart-top_winners" src="" alt="Top Teams by Wins">
+                    </div>
+                    <p class="chart-insight">Franchises like Mumbai Indians and Chennai Super Kings lead the victory counts, reflecting their consistent performances across tournament history.</p>
+                </div>
+
+                <!-- Chart Card 5 -->
+                <div class="chart-card large">
+                    <div class="chart-header">
+                        <h2>5. Target Runs vs. Victory Margin (Scatter Plot)</h2>
+                        <span class="info-tooltip" title="Scatter plot comparing target runs against the margin of victory, colored by winning type (runs vs wickets)."><i class="fa-solid fa-circle-info"></i></span>
+                    </div>
+                    <div class="chart-container">
+                        <div class="loader-overlay"><div class="spinner"></div></div>
+                        <img id="chart-target_vs_margin" src="" alt="Target Runs vs Victory Margin">
+                    </div>
+                    <p class="chart-insight">Matches won by runs tend to show higher margins at higher targets, whereas wicket margins are bounded between 1 and 10.</p>
+                </div>
+
+                <!-- Chart Card 6 -->
+                <div class="chart-card large">
+                    <div class="chart-header">
+                        <h2>6. Victory Margin Spread by Win Type (Box Plot)</h2>
+                        <span class="info-tooltip" title="Box plot displaying median, quartiles, and outliers of victory margins for run-victories vs wicket-victories."><i class="fa-solid fa-circle-info"></i></span>
+                    </div>
+                    <div class="chart-container">
+                        <div class="loader-overlay"><div class="spinner"></div></div>
+                        <img id="chart-margin_box" src="" alt="Victory Margin Boxplot">
+                    </div>
+                    <p class="chart-insight">Run victories have wider distributions (up to 140+ runs) and higher variance, whereas wicket victories are tightly bounded between 1 and 10 wickets.</p>
+                </div>
+
+                <!-- Chart Card 7 -->
+                <div class="chart-card large">
+                    <div class="chart-header">
+                        <h2>7. Correlation Heatmap of Match Attributes (Heatmap)</h2>
+                        <span class="info-tooltip" title="Heatmap displaying Pearson correlation coefficients between numerical match variables."><i class="fa-solid fa-circle-info"></i></span>
+                    </div>
+                    <div class="chart-container">
+                        <div class="loader-overlay"><div class="spinner"></div></div>
+                        <img id="chart-correlation_heat" src="" alt="Correlation Heatmap">
+                    </div>
+                    <p class="chart-insight">Target runs show positive correlation with the margin of victory in matches won by runs. Over time (season year), average targets have also seen a mild increase.</p>
+                </div>
+
+                <!-- Chart Card 8 -->
+                <div class="chart-card large">
+                    <div class="chart-header">
+                        <h2>8. Cumulative Wins Trend for Top 4 Teams (Area Chart)</h2>
+                        <span class="info-tooltip" title="Stacked area chart demonstrating the growth of cumulative wins over time for the top 4 IPL teams."><i class="fa-solid fa-circle-info"></i></span>
+                    </div>
+                    <div class="chart-container">
+                        <div class="loader-overlay"><div class="spinner"></div></div>
+                        <img id="chart-cumulative_wins" src="" alt="Cumulative Wins Trend">
+                    </div>
+                    <p class="chart-insight">The slopes indicate team consistency. Steady upward climbs represent constant win delivery, whereas flat regions show slump seasons.</p>
+                </div>
+
+                <!-- Chart Card 9 -->
+                <div class="chart-card large">
+                    <div class="chart-header">
+                        <h2>9. Top 10 Host Cities by Match Count (Count Plot)</h2>
+                        <span class="info-tooltip" title="Bar count plot showing the number of matches hosted by each city."><i class="fa-solid fa-circle-info"></i></span>
+                    </div>
+                    <div class="chart-container">
+                        <div class="loader-overlay"><div class="spinner"></div></div>
+                        <img id="chart-cities_count" src="" alt="Host Cities Count">
+                    </div>
+                    <p class="chart-insight">Metropolitan hubs like Mumbai, Bangalore, and Kolkata host the highest volume of matches, serving as primary venues for multiple seasons.</p>
+                </div>
+
+                <!-- Chart Card 10 -->
+                <div class="chart-card large">
+                    <div class="chart-header">
+                        <h2>10. Target Runs Density Spread over Seasons (Violin Plot)</h2>
+                        <span class="info-tooltip" title="Violin plot depicting the probability density, median, and interquartile range of target runs across IPL seasons."><i class="fa-solid fa-circle-info"></i></span>
+                    </div>
+                    <div class="chart-container">
+                        <div class="loader-overlay"><div class="spinner"></div></div>
+                        <img id="chart-target_violin" src="" alt="Target Runs Violin Plot">
+                    </div>
+                    <p class="chart-insight">The shape of the violins has grown taller and wider in recent seasons, indicating that pitches are producing both extreme high scores and highly variable matches.</p>
+                </div>
+            </section>
+        </main>
+    </div>
+    <!-- Javascript entrypoint -->
+    <script src="script.js"></script>
+</body>
+</html>
