@@ -49,7 +49,7 @@ def draw_empty_chart(title):
     apply_chart_style()
     fig, ax = plt.subplots(figsize=(6, 4))
     ax.text(0.5, 0.5, "No Data Matching Filters", 
-            color=TEXT_MUTED, ha='center', va='center', fontsize=12, fontweight='bold')
+            color=TEXT_COLOR, ha='center', va='center', fontsize=12, fontweight='bold')
     ax.set_title(title, color=TEXT_COLOR, fontsize=12, fontweight='bold', pad=15)
     ax.set_xticks([])
     ax.set_yticks([])
