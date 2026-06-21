@@ -286,16 +286,22 @@ import seaborn as sns
 THEME_BG = '#16171d'
 CARD_BG = '#20212a'
 TEXT_COLOR = '#ffffff'
-TEXT_MUTED = '#a0aec0'
 
 def apply_chart_style():
     plt.rcParams['figure.facecolor'] = THEME_BG
     plt.rcParams['axes.facecolor'] = CARD_BG
     plt.rcParams['text.color'] = TEXT_COLOR
-    plt.rcParams['axes.labelcolor'] = TEXT_MUTED
-    plt.rcParams['xtick.color'] = TEXT_MUTED
-    plt.rcParams['ytick.color'] = TEXT_MUTED
-    sns.set_theme(style="dark", rc={\"figure.facecolor\": THEME_BG, \"axes.facecolor\": CARD_BG})
+    plt.rcParams['axes.labelcolor'] = TEXT_COLOR
+    plt.rcParams['xtick.color'] = TEXT_COLOR
+    plt.rcParams['ytick.color'] = TEXT_COLOR
+    sns.set_theme(style="dark", rc={
+        "figure.facecolor": THEME_BG, 
+        "axes.facecolor": CARD_BG,
+        "text.color": TEXT_COLOR,
+        "axes.labelcolor": TEXT_COLOR,
+        "xtick.color": TEXT_COLOR,
+        "ytick.color": TEXT_COLOR
+    })
 
 def fig_to_base64(fig):
     buf = io.BytesIO()
